@@ -8,3 +8,13 @@ before_install:
   - go get -v github.com/gdamore/tcell
   - go get -v github.com/dghubble/go-twitter/twitter
   - go get -v github.com/dghubble/oauth1
+  
+script:
+  - go install -v github.com/mhann/go-twitter-client
+  
+deploy:
+  provider: releases
+  file: "$GOPATH/bin/go-twitter-client"
+  skip_cleanup: true
+  on:
+    tags: true
