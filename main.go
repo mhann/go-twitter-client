@@ -39,8 +39,9 @@ func main() {
 	screen.HideCursor()
 	screen.SetStyle(tcell.StyleDefault.
 		Background(tcell.ColorBlack).
-		Foreground(tcell.ColorBlack))
+		Foreground(tcell.ColorWhite))
 	screen.Clear()
+	screen.Show()
 
 	sigChan := make(chan os.Signal)
 	signal.Notify(sigChan, os.Interrupt)
@@ -57,6 +58,8 @@ func main() {
 
 	done := false
 
+	bar := StatusBar{}
+
 	for !done {
 		select {
 		case event := <-eventChan:
@@ -69,14 +72,19 @@ func main() {
 				case tcell.KeyRune:
 					switch ev.Rune() {
 					case 'w':
-						writeTextAtBottom("Up")
+						bar.Message = "Up Pressed"
+						bar.Render(screen)
 					case 'a':
-						writeTextAtBottom("Left")
+						bar.Message = "Left Pressed"
+						bar.Render(screen)
 					case 'd':
-						writeTextAtBottom("Right")
+						bar.Message = "Right Pressed"
+						bar.Render(screen)
 					case 's':
-						writeTextAtBottom("Down")
+						bar.Message = "Down Pressed"
+						bar.Render(screen)
 					}
+					screen.Show()
 				}
 			}
 		case tweet := <-tweetChannel:
@@ -90,16 +98,8 @@ func main() {
 	screen.Fini()
 }
 
-func writeTextAtBottom(text string) {
-	//offsetX := 1
-	//offsetY := 1
-
-	//for _, char := range text {
-	//	fmt.Println(char)
-	emitStr(screen, 1, 1, tcell.StyleDefault, "test")
-	//screen.Show()
-	//offsetX++
-	//}
+func writeTextAtBottom(s tcell.Screen, text string) {
+	emitStr(s, 1, 1, tcell.StyleDefault, text)
 }
 
 func emitStr(s tcell.Screen, x, y int, style tcell.Style, str string) {
@@ -113,7 +113,7 @@ func emitStr(s tcell.Screen, x, y int, style tcell.Style, str string) {
 			w = 1
 		}
 
-		s.SetContent(x, y, c, comb, style)
+		s.SetContent(x, y, c, comb, 0)
 		x += w
 	}
 }
