@@ -1,0 +1,10 @@
+language: go
+
+go:
+  - "1.10.x"
+  - master
+
+before_install:
+  - go get -v github.com/gdamore/tcell
+  - go get -v github.com/dghubble/go-twitter/twitter
+  - go get -v github.com/dghubble/oauth1
