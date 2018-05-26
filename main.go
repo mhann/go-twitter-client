@@ -59,6 +59,7 @@ func main() {
 	done := false
 
 	bar := StatusBar{}
+	td := TweetDisplay{}
 
 	for !done {
 		select {
@@ -88,7 +89,8 @@ func main() {
 				}
 			}
 		case tweet := <-tweetChannel:
-			processNewTweet(tweet)
+			td.Tweet = tweet
+			td.Render(screen)
 		case <-sigChan:
 			done = true
 			continue
